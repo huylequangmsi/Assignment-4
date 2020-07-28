@@ -56,12 +56,13 @@ democracy[complete.cases(democracy),] %>%
     geom_point(aes(y = m.V228H, colour = "Voters are threatened with violence"))+
     geom_point(aes(y = m.V228I, colour = "Voters are offered a genuine choice"))+
     theme(axis.text.x = element_text(angle = 90, hjust = 1), 
-          text = element_text(size = 9)) + 
+          text = element_text(size = 12)) + 
     xlab("Country") + 
     ylab("Mean Reported Attitude to Democracy") + 
     labs(title = "Self-reported Attitude to Democracy", 
          subtitle = "(1: Very often, 4: Not at all often)",
-         caption = "Source: World Values Survey, Wave 6, 2010-14")
+         caption = "Source: World Values Survey, Wave 6, 2010-14",
+         colour = "How often do the following things occur in this country’s elections?")
 
 
     
@@ -70,52 +71,52 @@ democracy[complete.cases(democracy),] %>%
 # To make a summary table
 
 news1 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V217) %>% 
-    mutate(p.V217 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V217 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news2 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V218) %>% 
-    mutate(p.V218 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V218 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news3 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V219) %>% 
-    mutate(p.V219 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V219 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news4 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V220) %>% 
-    mutate(p.V220 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V220 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news5 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V221) %>% 
-    mutate(p.V221 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V221 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news6 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V222) %>% 
-    mutate(p.V222 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V222 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news7 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V223) %>% 
-    mutate(p.V223 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V223 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news8 <- data_final %>%
-    group_by(country) %>% 
+    dplyr::group_by(country) %>% 
     dplyr::count(V224) %>% 
-    mutate(p.V224 = n/sum(n)) %>% 
-    select(-n)
+    dplyr::mutate(p.V224 = n/sum(n)) %>% 
+    dplyr::select(-n)
 
 news1 <- data.frame(news1)
 news2 <- data.frame(news2)
@@ -140,6 +141,7 @@ news <- join_all(list(news1, news2, news3, news4,
                  by = 'rn', type = 'full')
 news$rn <- NULL
 
+head(news)
 
 # To plot data
 
@@ -155,20 +157,22 @@ news_wide <- data_final %>%
            Internet = V223,
            Friends_Colleagues = V224)
 
+
 news_long <- melt(news_wide, id.vars = "country")
 
 
 news_long[complete.cases(news_long),] %>% 
     filter(country == "Algeria") %>% 
-    ggplot(aes(x = variable, y = value, fill = value))+
+    ggplot(aes(x = variable, y = as.factor(value), fill = as.factor(value)))+
     geom_bar(stat = "identity")+
     theme(axis.text.x = element_text(angle = 90, hjust = 1), 
-          text = element_text(size = 9)) + 
-    xlab("Country") + 
-    ylab("Total number of people") + 
+          text = element_text(size = 12)) + 
+    xlab("Media")+
+    ylab("Proportion") + 
     labs(title = "News consumption", 
-         subtitle = "(1: Daily, 2: Weekly, 3: Monthly, 4: < Monthly)",
-         caption = "Source: World Values Survey, Wave 6, 2010-14")
+         subtitle = "(1: Daily, 2: Weekly, 3: Monthly, 4: < Monthly, 5: Never)",
+         caption = "Source: World Values Survey, Wave 6, 2010-14",
+         fill = "Frequency")
 
 
 ## Attitude to Science 
@@ -193,7 +197,7 @@ science[complete.cases(science),] %>%
     geom_point(aes(y = m.V196, colour = "Science is not important"))+
     geom_point(aes(y = m.V197, colour = "The world is better off thanks to science"))+
     theme(axis.text.x = element_text(angle = 90, hjust = 1), 
-          text = element_text(size = 9)) + 
+          text = element_text(size = 12)) + 
     xlab("Country") + 
     ylab("Mean Reported Attitude to Science") + 
     labs(title = "Self-reported Attitude to Science", 
