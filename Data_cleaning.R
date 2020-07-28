@@ -1,5 +1,7 @@
 ## Load necessary packages
 library(tidyverse)
+library(plyr)
+library(data.table)
 
 
 ## Import data
@@ -30,8 +32,8 @@ country.name <- setNames(data_final$country, data_final$country) # country names
 ## Attitude to Democracy
 
 democracy <- data_final %>% 
-    group_by(country) %>% 
-    summarise(m.V228A = mean(V228A, na.rm = TRUE),
+    dplyr::group_by(country) %>% 
+    dplyr::summarise(m.V228A = mean(V228A, na.rm = TRUE),
               m.V228B = mean(V228B, na.rm = TRUE),
               m.V228C = mean(V228C, na.rm = TRUE),
               m.V228D = mean(V228D, na.rm = TRUE),
@@ -56,17 +58,124 @@ democracy[complete.cases(democracy),] %>%
     theme(axis.text.x = element_text(angle = 90, hjust = 1), 
           text = element_text(size = 9)) + 
     xlab("Country") + 
-    ylab("Mean Reported Attitude to Science") + 
-    labs(title = "Self-reported Attitude to Science", 
+    ylab("Mean Reported Attitude to Democracy") + 
+    labs(title = "Self-reported Attitude to Democracy", 
          subtitle = "(1: Very often, 4: Not at all often)",
          caption = "Source: World Values Survey, Wave 6, 2010-14")
+
+
     
+## News consumption
+
+# To make a summary table
+
+news1 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V217) %>% 
+    mutate(p.V217 = n/sum(n)) %>% 
+    select(-n)
+
+news2 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V218) %>% 
+    mutate(p.V218 = n/sum(n)) %>% 
+    select(-n)
+
+news3 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V219) %>% 
+    mutate(p.V219 = n/sum(n)) %>% 
+    select(-n)
+
+news4 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V220) %>% 
+    mutate(p.V220 = n/sum(n)) %>% 
+    select(-n)
+
+news5 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V221) %>% 
+    mutate(p.V221 = n/sum(n)) %>% 
+    select(-n)
+
+news6 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V222) %>% 
+    mutate(p.V222 = n/sum(n)) %>% 
+    select(-n)
+
+news7 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V223) %>% 
+    mutate(p.V223 = n/sum(n)) %>% 
+    select(-n)
+
+news8 <- data_final %>%
+    group_by(country) %>% 
+    dplyr::count(V224) %>% 
+    mutate(p.V224 = n/sum(n)) %>% 
+    select(-n)
+
+news1 <- data.frame(news1)
+news2 <- data.frame(news2)
+news3 <- data.frame(news3)
+news4 <- data.frame(news4)
+news5 <- data.frame(news5)
+news6 <- data.frame(news6)
+news7 <- data.frame(news7)
+news8 <- data.frame(news8)
+
+news1$rn <- rownames(news1)
+news2$rn <- rownames(news2)
+news3$rn <- rownames(news3)
+news4$rn <- rownames(news4)
+news5$rn <- rownames(news5)
+news6$rn <- rownames(news6)
+news7$rn <- rownames(news7)
+news8$rn <- rownames(news8)
+
+news <- join_all(list(news1, news2, news3, news4,
+                      news5, news6, news7, news8), 
+                 by = 'rn', type = 'full')
+news$rn <- NULL
+
+
+# To plot data
+
+news_wide <- data_final %>% 
+    select(country, V217, V218, V219, V220,
+           V221, V222, V223, V224) %>% 
+    dplyr::rename(Daily_newspaper = V217,
+           Printed_magazines = V218,
+           TV_news = V219,
+           Radio_news = V220,
+           Mobile_phone = V221,
+           Email = V222,
+           Internet = V223,
+           Friends_Colleagues = V224)
+
+news_long <- melt(news_wide, id.vars = "country")
+
+
+news_long[complete.cases(news_long),] %>% 
+    filter(country == "Algeria") %>% 
+    ggplot(aes(x = variable, y = value, fill = value))+
+    geom_bar(stat = "identity")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1), 
+          text = element_text(size = 9)) + 
+    xlab("Country") + 
+    ylab("Total number of people") + 
+    labs(title = "News consumption", 
+         subtitle = "(1: Daily, 2: Weekly, 3: Monthly, 4: < Monthly)",
+         caption = "Source: World Values Survey, Wave 6, 2010-14")
+
 
 ## Attitude to Science 
 
 science <- data_final %>% 
-    group_by(country) %>% 
-    summarise(m.V192 = mean(V192, na.rm = TRUE),
+    dplyr::group_by(country) %>% 
+    dplyr::summarise(m.V192 = mean(V192, na.rm = TRUE),
               m.V193 = mean(V193, na.rm = TRUE),
               m.V194 = mean(V194, na.rm = TRUE),
               m.V195 = mean(V195, na.rm = TRUE),
