@@ -1,4 +1,5 @@
 ## Load necessary packages
+
 library(tidyverse)
 library(plyr)
 library(data.table)
@@ -42,7 +43,7 @@ democracy <- data_final %>%
               m.V228G = mean(V228G, na.rm = TRUE),
               m.V228H = mean(V228H, na.rm = TRUE),
               m.V228I = mean(V228I, na.rm = TRUE))
-head(democracy)
+
 
 democracy[complete.cases(democracy),] %>% 
     ggplot(aes(x = country))+
@@ -63,7 +64,6 @@ democracy[complete.cases(democracy),] %>%
          subtitle = "(1: Very often, 4: Not at all often)",
          caption = "Source: World Values Survey, Wave 6, 2010-14",
          colour = "How often do the following things occur in this country’s elections?")
-
 
     
 ## News consumption
@@ -141,12 +141,11 @@ news <- join_all(list(news1, news2, news3, news4,
                  by = 'rn', type = 'full')
 news$rn <- NULL
 
-head(news)
 
 # To plot data
 
 news_wide <- data_final %>% 
-    select(country, V217, V218, V219, V220,
+    dplyr::select(country, V217, V218, V219, V220,
            V221, V222, V223, V224) %>% 
     dplyr::rename(Daily_newspaper = V217,
            Printed_magazines = V218,
@@ -174,6 +173,7 @@ news_long[complete.cases(news_long),] %>%
          caption = "Source: World Values Survey, Wave 6, 2010-14",
          fill = "Frequency")
 
+head(news_long)
 
 ## Attitude to Science 
 
@@ -186,7 +186,6 @@ science <- data_final %>%
               m.V196 = mean(V196, na.rm = TRUE),
               m.V197 = mean(V197, na.rm = TRUE))
 
-head(science)
 
 science[complete.cases(science),] %>% 
            ggplot(aes(x=country)) +
@@ -205,5 +204,5 @@ science[complete.cases(science),] %>%
          caption = "Source: World Values Survey, Wave 6, 2010-14")
 
 
-
+sessionInfo()
 
